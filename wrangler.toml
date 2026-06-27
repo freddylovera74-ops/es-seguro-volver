@@ -23,4 +23,4 @@ bucket_name = "esv-fotos"
 # El secreto (TURNSTILE_SECRET) y el token de admin (ADMIN_TOKEN) son
 # secretos: configúralos con `wrangler pages secret put NOMBRE` o en el panel.
 [vars]
-# TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+TURNSTILE_SITE_KEY = "0x4AAAAAADr5L9moNYJPRc34"
