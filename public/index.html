@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c4fd6">
+<meta name="description" content="Plataforma ciudadana de orientación estructural tras un sismo. Una foto no reemplaza una inspección presencial.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<title>¿Es seguro volver?</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+*{box-sizing:border-box}html,body{margin:0}body{background:#e6e6e4;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#181816;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:3px solid #1c4fd6;outline-offset:2px;border-radius:4px}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:#f4f4f2;position:relative;box-shadow:0 0 0 1px #dadad7}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;height:54px;padding:0 16px;background:#fff;border-bottom:3px solid #00247D;border-image:linear-gradient(90deg,#FCD116 0 33.33%,#00247D 0 66.66%,#CF142B 0) 1}
+.brand{font-weight:800;font-size:17px;letter-spacing:-.01em}
+.back{appearance:none;border:1px solid #d6d6d2;background:#fff;border-radius:8px;width:36px;height:36px;font-size:18px;line-height:1;cursor:pointer;color:#181816;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scr{padding:16px}
+.warn{position:sticky;top:54px;z-index:20;display:flex;gap:11px;padding:13px 14px;background:#fff7e6;border:1px solid #e7c878;border-left:5px solid #c4860a;border-radius:10px;margin:0 16px 16px}
+.warn-ico{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#c4860a;color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center}
+.warn-txt{font-size:13.5px;line-height:1.45;color:#5a3e08}.warn-txt b{color:#7a2e0a}
+.h1{font-size:27px;line-height:1.18;font-weight:800;letter-spacing:-.02em;margin:6px 0 10px}
+.lead{font-size:15.5px;line-height:1.5;color:#56564f;margin:0 0 20px}
+.btn{display:block;width:100%;padding:16px;border-radius:11px;font-size:16.5px;font-weight:700;border:none;cursor:pointer;text-align:center;letter-spacing:-.01em}
+.btn-blue{background:#1c4fd6;color:#fff}
+.btn-ghost{background:#fff;border:1.5px solid #cfcfca;color:#181816}
+.brow{display:flex;flex-direction:column;gap:11px;margin-bottom:22px}
+.link{display:block;text-align:center;color:#1c4fd6;font-weight:600;font-size:14.5px;text-decoration:none;padding:8px;background:none;border:none;cursor:pointer;width:100%}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{background:#fff;border:1px solid #e2e2df;border-radius:11px;padding:15px 8px;text-align:center}
+.stat-n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.stat-l{font-size:11.5px;color:#6b6b63;margin-top:3px;line-height:1.25}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 12px}
+.sec-t{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.sec-c{font-size:13px;color:#85857c}
+.search{width:100%;padding:12px 14px;border:1.5px solid #d6d6d2;border-radius:10px;font-size:15px;background:#fff;margin-bottom:11px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.chip{appearance:none;border:1.5px solid #d6d6d2;background:#fff;color:#46463f;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chip-on{background:#181816;border-color:#181816;color:#fff}
+.cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{display:flex;background:#fff;border:1px solid #e2e2df;border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;width:100%;font-family:inherit}
+.cbar{width:7px;flex-shrink:0}
+.card-in{display:flex;gap:12px;padding:12px;flex:1;min-width:0;align-items:center}
+.foto{width:74px;height:74px;border-radius:9px;flex-shrink:0;object-fit:cover;background:#eee}
+.ph{width:74px;height:74px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:9px;color:#9a9a90;padding:4px;line-height:1.3;background:repeating-linear-gradient(45deg,#efefec,#efefec 7px,#e6e6e2 7px,#e6e6e2 14px)}
+.card-body{flex:1;min-width:0}
+.card-t{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-m{font-size:12.5px;color:#76766d;line-height:1.35;margin-bottom:7px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700}
+.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.bar-g{background:#1f9d4d}.bar-y{background:#d39000}.bar-r{background:#c0241c}.bar-p{background:#a5a59c}
+.dot-g{background:#1f9d4d}.dot-y{background:#d39000}.dot-r{background:#c0241c}.dot-p{background:#a5a59c}
+.txt-g{color:#157a3b}.txt-y{color:#9a6a00}.txt-r{color:#9a1c16}.txt-p{color:#76766d}
+.opc{font-size:11.5px;color:#9a9a90;margin-top:3px}
+.empty{text-align:center;padding:40px 20px;background:#fff;border:1px dashed #d0d0ca;border-radius:12px}
+.empty-t{font-weight:700;font-size:16px;margin-bottom:6px}
+.empty-s{font-size:14px;color:#76766d;line-height:1.5;margin-bottom:18px}
+.foto-lg{width:100%;height:230px;object-fit:cover;border-radius:12px;background:#eee;display:block}
+.ph-lg{width:100%;height:200px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#9a9a90;background:repeating-linear-gradient(45deg,#efefec,#efefec 11px,#e6e6e2 11px,#e6e6e2 22px)}
+.sb{display:flex;gap:13px;padding:16px;border-radius:12px;margin:16px 0;align-items:flex-start}
+.sb-g{background:#e7f6ec;border:1px solid #b7e1c4}.sb-y{background:#fdf3dc;border:1px solid #ecd28f}.sb-r{background:#fbe7e5;border:1px solid #ecb3ae}.sb-p{background:#f0f0ed;border:1px solid #dcdcd6}
+.sb-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.sb-tag{font-size:13px;font-weight:800;letter-spacing:.03em}
+.sb-sub{font-size:13.5px;line-height:1.45;margin-top:3px;color:#3a3a34}
+.dt-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px}
+.dt-loc{font-size:14px;color:#76766d;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;background:#fff;border:1px solid #e2e2df;border-radius:12px;padding:15px;margin-bottom:8px}
+.dt{font-size:13px;color:#85857c;font-weight:600}
+.dd{font-size:13.5px;color:#181816;text-align:right}
+.desc{background:#fff;border:1px solid #e2e2df;border-radius:12px;padding:15px;font-size:14px;line-height:1.5;color:#33332e;margin-bottom:18px}
+.ops{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.op{background:#fff;border:1px solid #e2e2df;border-radius:12px;padding:14px;border-left:5px solid #d0d0ca}
+.op-h{display:flex;gap:9px;align-items:flex-start;margin-bottom:8px}
+.op-name{font-size:15px;font-weight:700}
+.op-prof{font-size:12.5px;color:#76766d;margin-top:1px}
+.op-tag{font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:6px;color:#fff;margin-left:auto;flex-shrink:0}
+.op-c{font-size:14px;line-height:1.5;color:#2c2c27}
+.op-f{font-size:11.5px;color:#85857c;font-style:italic;margin-top:10px;padding-top:9px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.vbadge{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.03em;color:#157a3b;background:#e7f6ec;border:1px solid #b7e1c4;border-radius:6px;padding:2px 6px;margin-top:3px}
+.rep{appearance:none;background:none;border:none;color:#9a9a90;font-size:12px;font-weight:600;cursor:pointer;padding:2px 4px;text-decoration:underline;font-family:inherit;flex-shrink:0}
+.rep:hover{color:#9a1c16}
+.note{display:flex;gap:10px;background:#eef3fd;border:1px solid #bcd0f5;border-radius:10px;padding:13px;font-size:13px;line-height:1.45;color:#22427e;margin-bottom:16px}
+.auth{background:#fbe7e5;border:1px solid #ecb3ae;border-left:5px solid #c0241c;border-radius:12px;padding:15px;margin:0 0 18px}
+.auth-h{font-size:15px;font-weight:800;color:#9a1c16;margin-bottom:5px}
+.auth-s{font-size:13px;line-height:1.45;color:#5a2a26;margin-bottom:12px}
+.auth-row{display:flex;flex-direction:column;gap:9px;margin-bottom:11px}
+.auth-btn{display:block;text-align:center;text-decoration:none;padding:13px;border-radius:10px;font-size:15px;font-weight:700;background:#fff;border:1.5px solid #ecb3ae;color:#9a1c16}
+.auth-call{background:#c0241c;color:#fff;border-color:#c0241c}
+.auth-list{font-size:12.5px;color:#5a2a26}.auth-list a{color:#9a1c16}
+.field{display:block;margin-bottom:16px}
+.label{display:block;font-size:13.5px;font-weight:700;margin-bottom:7px}
+.req{color:#c0241c}
+.opt{color:#a5a59c;font-weight:500}
+.input,.ta{width:100%;padding:12px 13px;border:1.5px solid #d6d6d2;border-radius:10px;font-size:15px;background:#fff;font-family:inherit;color:#181816}
+.ta{min-height:92px;resize:vertical;line-height:1.45}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt-b{appearance:none;border:1.5px solid #d6d6d2;background:#fff;color:#3a3a34;border-radius:9px;padding:10px 13px;font-size:13.5px;font-weight:600;cursor:pointer}
+.opt-on{border-color:#1c4fd6;background:#eef3fd;color:#1c4fd6}
+.checks{display:flex;flex-direction:column;gap:8px}
+.check{appearance:none;border:1.5px solid #d6d6d2;background:#fff;color:#3a3a34;border-radius:9px;padding:12px 13px;font-size:14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px}
+.check-on{border-color:#1c4fd6;background:#eef3fd;color:#1c4fd6}
+.cbox{width:18px;height:18px;border-radius:5px;border:1.5px solid #b9b9b2;flex-shrink:0}
+.check-on .cbox{background:#1c4fd6;border-color:#1c4fd6}
+.consent{appearance:none;border:1.5px solid #d6d6d2;background:#fff;color:#3a3a34;border-radius:11px;padding:13px;font-size:13px;line-height:1.45;text-align:left;cursor:pointer;display:flex;align-items:flex-start;gap:10px;width:100%;margin-bottom:16px}
+.consent.check-on{border-color:#1f9d4d;background:#e7f6ec}
+.consent.check-on .cbox{background:#1f9d4d;border-color:#1f9d4d}
+.consent a{color:#1c4fd6;font-weight:600}
+.photo{display:flex;flex-direction:column;align-items:center;gap:10px;border:1.5px dashed #c3c3bd;border-radius:11px;padding:18px;background:#fff;cursor:pointer;text-align:center}
+.photo-h{font-size:14px;font-weight:600;color:#46463f}
+.photo-s{font-size:12px;color:#85857c}
+.preview{width:100%;border-radius:10px;display:block;max-height:240px;object-fit:cover;margin-bottom:9px}
+.sem{display:flex;flex-direction:column;gap:9px}
+.sem-b{appearance:none;display:flex;gap:12px;align-items:flex-start;text-align:left;border:1.5px solid #d6d6d2;background:#fff;border-radius:11px;padding:13px;cursor:pointer;width:100%}
+.sem-g.sem-on{border-color:#1f9d4d;background:#e7f6ec}.sem-y.sem-on{border-color:#d39000;background:#fdf3dc}.sem-r.sem-on{border-color:#c0241c;background:#fbe7e5}
+.sem-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.sem-t{font-size:14.5px;font-weight:800}
+.sem-d{font-size:12.5px;color:#56564f;line-height:1.4;margin-top:2px}
+.ts{margin:0 0 16px;min-height:1px}
+.err{background:#fbe7e5;border:1px solid #ecb3ae;color:#9a1c16;font-size:13.5px;font-weight:600;padding:11px 13px;border-radius:9px;margin-bottom:14px}
+.priv{font-size:12px;color:#157a3b;font-weight:600;margin-top:6px;display:block}
+.dim{color:#85857c}
+.muted{text-align:center;color:#85857c;font-size:14px;padding:30px}
+.foot{margin-top:26px;padding:18px 4px 8px;border-top:1px solid #e2e2df;text-align:center;font-size:12px;color:#9a9a90;line-height:1.6}
+.flink{background:none;border:none;color:#76766d;font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0}
+.legal-h{font-size:20px;font-weight:800;letter-spacing:-.02em;margin:4px 0 14px}
+.legal-b{font-size:14px;line-height:1.6;color:#33332e}
+.legal-b h3{font-size:15px;margin:20px 0 6px}
+.legal-b p{margin:0 0 12px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top" id="top"><div class="brand">¿Es seguro volver?</div></div>
+<div id="view"><div class="muted">Cargando…</div></div>
+</div>
+<script>
+const API = '/api';
+const $ = (s, r) => (r||document).querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DMG = {grietasCol:'Grietas en columnas o vigas',grietasPared:'Grietas en paredes',inclinacion:'Inclinación del edificio',hundimiento:'Hundimiento',vidrios:'Vidrios rotos',ninguno:'Ninguno aparente'};
+const INFO = {
+  green:{c:'g',tag:'VERDE',short:'Sin daños aparentes',sub:'Sin daños estructurales aparentes en la foto. Probablemente habitable. No es garantía: una foto no reemplaza la revisión presencial.',color:'#1f9d4d'},
+  yellow:{c:'y',tag:'AMARILLO',short:'Uso restringido',sub:'Uso restringido. Posibles daños; entra solo lo imprescindible y con cuidado.',color:'#d39000'},
+  red:{c:'r',tag:'ROJO',short:'No entrar',sub:'No entrar. Señales de riesgo estructural; podría colapsar en una réplica.',color:'#c0241c'},
+  pending:{c:'p',tag:'PENDIENTE',short:'Pendiente de revisión',sub:'Todavía ningún ingeniero ha dado su opinión. Si eres profesional, puedes añadir la tuya.',color:'#a5a59c'}
+};
+const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
+const WARN = '<div class="warn"><div class="warn-ico">!</div><div class="warn-txt">Esto es una <b>orientación a distancia, NO una inspección oficial</b>. Una foto no reemplaza la revisión presencial de un ingeniero. <b>Ante la duda, NO entres.</b></div></div>';
+
+const state = { screen:'home', list:[], sel:null, filter:'todas', search:'', err:'', tsKey:null };
+let pendingPhoto = null;
+let tsWidget = null;
+
+// ---------- API ----------
+async function apiGet(p){ const r = await fetch(API+p); if(!r.ok) throw new Error('http'); return r.json(); }
+async function apiPost(p, body){ const r = await fetch(API+p, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}); const j = await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.error||'No se pudo guardar.'); return j; }
+
+async function loadConfig(){ try { const c = await apiGet('/config'); state.tsKey = c.turnstileSiteKey||null; } catch(e){ state.tsKey=null; } }
+async function loadList(){ try { const j = await apiGet('/viviendas'); state.list = j.viviendas||[]; } catch(e){ state.list = []; } }
+
+// ---------- Turnstile (anti-spam, opcional) ----------
+function mountTurnstile(id){
+  tsWidget = null;
+  if(!state.tsKey) return;
+  const el = document.getElementById(id); if(!el) return;
+  const tryRender = (n)=>{
+    if(el.dataset.rendered) return;
+    if(window.turnstile && el.isConnected){ try{ tsWidget = window.turnstile.render('#'+id,{sitekey:state.tsKey}); el.dataset.rendered='1'; }catch(e){} }
+    else if(n>0){ setTimeout(()=>tryRender(n-1),300); }
+  };
+  tryRender(12);
+}
+function tsToken(){ try{ return (state.tsKey && window.turnstile && tsWidget!=null) ? (window.turnstile.getResponse(tsWidget)||'') : ''; }catch(e){ return ''; } }
+
+// ---------- Navegación ----------
+function nav(screen){ state.screen = screen; state.err=''; render(); window.scrollTo(0,0); }
+async function openDetail(id){ state.err=''; try { state.sel = await apiGet('/viviendas/'+id); } catch(e){ state.sel=null; } state.screen='detail'; render(); window.scrollTo(0,0); }
+function goBack(){ const s=state.screen; if(s==='detail') nav('list'); else if(s==='engineer') openDetail(state.sel.id); else nav('home'); }
+
+// ---------- Vistas ----------
+function render(){
+  $('#top').innerHTML = (state.screen!=='home' ? '<button class="back" id="back" aria-label="Volver">←</button>' : '') + '<div class="brand">¿Es seguro volver?</div>';
+  const v = $('#view');
+  if(state.screen==='home') v.innerHTML = viewHome();
+  else if(state.screen==='list') v.innerHTML = viewList();
+  else if(state.screen==='detail') v.innerHTML = viewDetail();
+  else if(state.screen==='register') v.innerHTML = viewRegister();
+  else if(state.screen==='engineer') v.innerHTML = viewEngineer();
+  else if(state.screen==='legal') v.innerHTML = viewLegal();
+  bind();
+}
+
+function footer(){
+  return '<div class="foot">Esto orienta, no sustituye una inspección presencial.<br><button class="flink" data-go="legal">Aviso legal y privacidad</button> · <a class="flink" href="/admin">Moderación</a></div>';
+}
+
+function viewHome(){
+  const n = state.list.length;
+  const rev = state.list.filter(x=>x.opCount>0).length;
+  const pend = state.list.filter(x=>x.statusKey==='pending').length;
+  return WARN + '<div class="scr">'
+    + '<h1 class="h1">Antes de volver, que alguien con criterio mire tu vivienda.</h1>'
+    + '<p class="lead">Sube una foto y los datos de tu casa o edificio. Ingenieros voluntarios te dan una orientación de seguridad a distancia, sin costo.</p>'
+    + '<div class="brow"><button class="btn btn-blue" data-go="register">Registrar mi vivienda</button><button class="btn btn-ghost" data-go="englist">Soy ingeniero, quiero ayudar</button></div>'
+    + '<button class="link" data-go="list">Ver todas las viviendas registradas →</button>'
+    + '<div class="stats" style="margin-top:18px"><div class="stat"><div class="stat-n">'+n+'</div><div class="stat-l">Viviendas registradas</div></div><div class="stat"><div class="stat-n txt-g">'+rev+'</div><div class="stat-l">Revisadas</div></div><div class="stat"><div class="stat-n txt-y">'+pend+'</div><div class="stat-l">Pendientes</div></div></div>'
+    + footer()
+    + '</div>';
+}
+
+function viewList(){
+  const f = state.filter, q = state.search.trim().toLowerCase();
+  let fl = state.list.slice();
+  if(f==='pendientes') fl = fl.filter(x=>x.statusKey==='pending');
+  else if(f==='revisadas') fl = fl.filter(x=>x.opCount>0);
+  else if(f==='verde') fl = fl.filter(x=>x.statusKey==='green');
+  else if(f==='amarillo') fl = fl.filter(x=>x.statusKey==='yellow');
+  else if(f==='rojo') fl = fl.filter(x=>x.statusKey==='red');
+  if(q) fl = fl.filter(x=>((x.titulo||'')+' '+(x.ubicacion||'')+' '+(x.nombre||'')).toLowerCase().includes(q));
+  const fc = k => f===k ? ' chip-on' : '';
+  const countText = fl.length===state.list.length ? (state.list.length+(state.list.length===1?' vivienda':' viviendas')) : (fl.length+' de '+state.list.length);
+  const chips = '<div class="chips">'
+    + '<button class="chip'+fc('todas')+'" data-filter="todas">Todas</button>'
+    + '<button class="chip'+fc('pendientes')+'" data-filter="pendientes"><span class="cdot dot-p"></span>Pendientes</button>'
+    + '<button class="chip'+fc('revisadas')+'" data-filter="revisadas">Revisadas</button>'
+    + '<button class="chip'+fc('verde')+'" data-filter="verde"><span class="cdot dot-g"></span>Verde</button>'
+    + '<button class="chip'+fc('amarillo')+'" data-filter="amarillo"><span class="cdot dot-y"></span>Amarillo</button>'
+    + '<button class="chip'+fc('rojo')+'" data-filter="rojo"><span class="cdot dot-r"></span>Rojo</button></div>';
+  let body;
+  if(fl.length===0){
+    const empty = (f==='todas' && !q);
+    body = '<div class="empty"><div class="empty-t">'+(empty?'Aún no hay viviendas registradas.':'No hay viviendas con este filtro.')+'</div><div class="empty-s">'+(empty?'Sé el primero. Registra tu vivienda para que un ingeniero pueda orientarte.':'Prueba con otro filtro o limpia la búsqueda.')+'</div><button class="btn btn-blue" data-go="register">Registrar mi vivienda</button></div>';
+  } else {
+    body = '<div class="list">' + fl.map(card).join('') + '</div>';
+  }
+  return '<div class="scr"><div class="sec-h"><div class="sec-t">Viviendas</div><div class="sec-c">'+countText+'</div></div>'
+    + '<input class="search" id="search" type="search" placeholder="Buscar por ubicación o nombre…" value="'+esc(state.search)+'" aria-label="Buscar viviendas">'
+    + chips + body + '</div>';
+}
+
+function card(x){
+  const i = INFO[x.statusKey]||INFO.pending;
+  const meta = esc(x.ubicacion+' · '+cap(x.tipo)+' · '+x.pisos+' pisos');
+  const opText = x.opCount ? (x.opCount===1?'1 opinión de ingeniero':x.opCount+' opiniones de ingenieros') : 'Sin revisar todavía';
+  const foto = x.foto ? '<img class="foto" src="'+esc(x.foto)+'" alt="">' : '<div class="ph">SIN FOTO</div>';
+  return '<button class="card" data-id="'+esc(x.id)+'"><div class="cbar bar-'+i.c+'"></div><div class="card-in">'+foto
+    + '<div class="card-body"><div class="card-t">'+esc(x.titulo)+'</div><div class="card-m">'+meta+'</div>'
+    + '<div class="badge txt-'+i.c+'"><span class="dot dot-'+i.c+'"></span>'+i.short+'</div><div class="opc">'+opText+'</div></div></div></button>';
+}
+
+function authoritiesPanel(v){
+  const msg = encodeURIComponent('🔴 Caso de riesgo estructural en "'+(v.titulo||'')+'" ('+(v.ubicacion||'')+'). Un ingeniero lo marcó como NO ENTRAR. Se recomienda inspección presencial urgente. Más info: '+location.origin);
+  return '<div class="auth"><div class="auth-h">⚠ Marcado ROJO — riesgo estructural</div>'
+    + '<div class="auth-s">La app solo orienta; el rescate y la inspección oficial los hacen las autoridades. Si hay personas en peligro, llama ya.</div>'
+    + '<div class="auth-row">'
+    + '<a class="auth-btn auth-call" href="tel:171">📞 Llamar al 171 (emergencias)</a>'
+    + '<a class="auth-btn" href="https://wa.me/?text='+msg+'" target="_blank" rel="noopener">Compartir caso por WhatsApp</a>'
+    + '</div>'
+    + '<div class="auth-list">También: Protección Civil · Bomberos · <a href="https://www.funvisis.gob.ve" target="_blank" rel="noopener">FUNVISIS (sismología)</a></div>'
+    + '</div>';
+}
+
+function viewDetail(){
+  const v = state.sel;
+  if(!v) return WARN+'<div class="scr"><div class="muted">No se pudo cargar la vivienda.</div></div>';
+  const i = INFO[v.statusKey]||INFO.pending;
+  const foto = v.foto ? '<img class="foto-lg" src="'+esc(v.foto)+'" alt="Foto de la vivienda">' : '<div class="ph-lg">[ foto de la vivienda ]</div>';
+  const ops = (v.opinions||[]).map(o=>{
+    const oi = INFO[o.status]||INFO.pending;
+    const prof = o.civ ? esc(o.profesion+' · CIV '+o.civ) : esc(o.profesion);
+    const vb = o.verified ? '<div><span class="vbadge">✓ Verificado</span></div>' : '';
+    return '<div class="op" style="border-left-color:'+oi.color+'"><div class="op-h"><div><div class="op-name">'+esc(o.nombre)+'</div><div class="op-prof">'+prof+'</div>'+vb+'</div><div class="op-tag" style="background:'+oi.color+'">'+oi.tag+'</div></div>'
+      + '<div class="op-c">'+esc(o.comentario)+'</div><div class="op-f"><span>De ser posible, que un profesional revise la vivienda en persona.</span><button class="rep" data-rep-op="'+esc(o.id)+'">⚐ Reportar</button></div></div>';
+  }).join('');
+  const noOps = (v.opinions||[]).length===0 ? '<div class="empty" style="margin-bottom:16px"><div class="empty-t">Aún no hay opiniones de ingenieros.</div><div class="empty-s">¿Eres ingeniero o profesional de la construcción? Tu opinión orientativa puede ayudar a esta familia a decidir.</div></div>' : '';
+  const opCountText = (v.opinions||[]).length ? ((v.opinions.length)+(v.opinions.length===1?' opinión':' opiniones')) : 'Ninguna aún';
+  return WARN + '<div class="scr">'+foto
+    + '<h2 class="dt-title">'+esc(v.titulo)+'</h2><div class="dt-loc">'+esc(v.ubicacion)+'</div>'
+    + '<div class="sb sb-'+i.c+'"><div class="sb-dot dot-'+i.c+'"></div><div><div class="sb-tag txt-'+i.c+'">'+i.tag+'</div><div class="sb-sub">'+i.sub+'</div></div></div>'
+    + (v.statusKey==='red' ? authoritiesPanel(v) : '')
+    + '<div class="grid"><div class="dt">Tipo</div><div class="dd">'+(esc(cap(v.tipo))||'No indicado')+'</div>'
+    + '<div class="dt">Pisos del edificio</div><div class="dd">'+esc(v.pisos)+'</div>'
+    + '<div class="dt">Piso en que vive</div><div class="dd">'+esc(v.piso)+'</div>'
+    + '<div class="dt">Construcción</div><div class="dd">'+esc(v.construccion)+'</div>'
+    + '<div class="dt">Sector / referencia</div><div class="dd">'+esc(v.sector)+'</div>'
+    + '<div class="dt">Daños visibles</div><div class="dd">'+esc((v.damages||[]).join(' · '))+'</div>'
+    + '<div class="dt">Registrado por</div><div class="dd">'+esc(v.nombre)+' <span class="dim">· contacto privado</span></div></div>'
+    + '<div class="desc">'+esc(v.descripcion)+'</div>'
+    + '<div class="sec-h"><div class="sec-t">Opiniones</div><div class="sec-c">'+opCountText+'</div></div>'
+    + noOps + '<div class="ops">'+ops+'</div>'
+    + '<button class="btn btn-blue" data-go="engineer">Soy ingeniero — añadir mi opinión</button>'
+    + '<div style="text-align:center;margin-top:14px"><button class="rep" data-rep-viv="'+esc(v.id)+'">⚐ Reportar esta ficha a moderación</button></div>'
+    + '</div>';
+}
+
+function viewRegister(){
+  const errHtml = state.err ? '<div class="err">'+esc(state.err)+'</div>' : '';
+  const preview = pendingPhoto ? '<img class="preview" id="pv" src="'+pendingPhoto+'" alt="Vista previa">' : '';
+  const chk = (k) => '<button type="button" class="check" data-dmg="'+k+'"><span class="cbox"></span>'+DMG[k]+'</button>';
+  const ts = state.tsKey ? '<div class="ts" id="ts-reg"></div>' : '';
+  return '<div class="scr"><h2 class="dt-title" style="margin-bottom:4px">Registrar mi vivienda</h2>'
+    + '<p class="lead" style="margin-bottom:16px;font-size:14.5px">Solo necesitamos una <b>foto</b> y un <b>contacto</b>. Lo demás, si puedes y con calma. Un ingeniero la revisará.</p>'
+    + errHtml
+    + '<div class="field"><span class="label">Foto de la vivienda <span class="opt">(lo más útil)</span></span>'+preview
+    + '<label class="photo"><div class="photo-h" id="photoLabel">'+(pendingPhoto?'Cambiar foto':'Toca para subir una foto')+'</div><div class="photo-s">Se comprime sola antes de subir</div><input type="file" id="photo" accept="image/*" style="display:none"></label></div>'
+    + '<label class="field"><span class="label">Teléfono o email de contacto <span class="req">*</span></span><input class="input" id="contacto" type="text" placeholder="Ej. 0414-1234567"><span class="priv">🔒 Privado. No se muestra a nadie más.</span></label>'
+    + '<label class="field"><span class="label">¿Dónde queda? <span class="opt">(ciudad y sector)</span></span><input class="input" id="ubicacion" type="text" placeholder="Ej. El Llano, Mérida"></label>'
+    + '<div class="field"><span class="label">¿Qué es? <span class="opt">(opcional)</span></span><div class="opts"><button type="button" class="opt-b" data-tipo="casa">Casa</button><button type="button" class="opt-b" data-tipo="apartamento">Apartamento</button><button type="button" class="opt-b" data-tipo="edificio">Edificio</button></div></div>'
+    + '<div class="field"><span class="label">Daños que ves <span class="opt">(opcional, marca los que apliquen)</span></span><div class="checks">'+['grietasCol','grietasPared','inclinacion','hundimiento','vidrios','ninguno'].map(chk).join('')+'</div></div>'
+    + '<label class="field"><span class="label">Algo más que contar <span class="opt">(opcional)</span></span><textarea class="ta" id="descripcion" placeholder="Grietas, ruidos, puertas que no cierran…"></textarea></label>'
+    + '<button type="button" class="consent" id="consent" aria-pressed="false"><span class="cbox"></span><span>Entiendo que esto es una <b>orientación de buena fe, no una inspección oficial</b>, y autorizo guardar mi contacto solo para que un ingeniero pueda orientarme. <a data-go="legal">Ver aviso legal</a>.</span></button>'
+    + ts
+    + '<button class="btn btn-blue" id="submitReg">Registrar vivienda</button></div>';
+}
+
+function viewEngineer(){
+  const v = state.sel;
+  const errHtml = state.err ? '<div class="err">'+esc(state.err)+'</div>' : '';
+  const ts = state.tsKey ? '<div class="ts" id="ts-eng"></div>' : '';
+  return '<div class="scr"><h2 class="dt-title" style="margin-bottom:4px">Opinión del ingeniero</h2>'
+    + '<p class="lead" style="margin-bottom:18px;font-size:14.5px">Para: <b>'+esc(v?v.titulo:'')+'</b></p>'+errHtml
+    + '<label class="field"><span class="label">Su nombre <span class="req">*</span></span><input class="input" id="eg_nombre" type="text" placeholder="Ej. Ing. Carlos Materán"></label>'
+    + '<label class="field"><span class="label">Profesión <span class="req">*</span></span><input class="input" id="eg_prof" type="text" placeholder="Ej. Ingeniero estructural"></label>'
+    + '<label class="field"><span class="label">N.º de colegiatura CIV <span class="opt">(opcional, da respaldo)</span></span><input class="input" id="eg_civ" type="text" placeholder="Ej. 20891"></label>'
+    + '<div class="field"><span class="label">Opinión en semáforo <span class="req">*</span></span><div class="sem">'
+    + '<button type="button" class="sem-b sem-g" data-status="green"><span class="sem-dot dot-g"></span><div><div class="sem-t">🟢 VERDE</div><div class="sem-d">Sin daños estructurales aparentes en la foto. Probablemente habitable.</div></div></button>'
+    + '<button type="button" class="sem-b sem-y" data-status="yellow"><span class="sem-dot dot-y"></span><div><div class="sem-t">🟡 AMARILLO</div><div class="sem-d">Uso restringido. Posibles daños; entrar solo lo imprescindible y con cuidado.</div></div></button>'
+    + '<button type="button" class="sem-b sem-r" data-status="red"><span class="sem-dot dot-r"></span><div><div class="sem-t">🔴 ROJO</div><div class="sem-d">No entrar. Señales de riesgo estructural; podría colapsar en una réplica.</div></div></button>'
+    + '</div></div>'
+    + '<label class="field"><span class="label">Comentario — explica por qué <span class="req">*</span></span><textarea class="ta" id="eg_com" placeholder="Qué observas en la foto y los datos, y qué recomiendas."></textarea></label>'
+    + '<div class="note"><div class="warn-ico" style="background:#1c4fd6">i</div><div>Tu opinión es orientativa y de buena fe. <b>Recomienda siempre una inspección presencial profesional</b> cuando sea posible.</div></div>'
+    + ts
+    + '<button class="btn btn-blue" id="submitEng">Enviar mi opinión</button></div>';
+}
+
+function viewLegal(){
+  return '<div class="scr"><h2 class="legal-h">Aviso legal y privacidad</h2><div class="legal-b">'
+    + '<p><b>¿Es seguro volver?</b> es una herramienta ciudadana, sin ánimo de lucro, para orientar tras un sismo. No es un servicio oficial del Estado ni de ningún colegio profesional.</p>'
+    + '<h3>Esto NO es una inspección oficial</h3>'
+    + '<p>Las opiniones de los voluntarios son una <b>orientación de buena fe a distancia, a partir de una foto</b>. No sustituyen la inspección presencial de un profesional ni la evaluación de Protección Civil, Bomberos o las autoridades competentes. <b>Ante cualquier duda, no entres y solicita una revisión presencial.</b></p>'
+    + '<h3>Responsabilidad</h3>'
+    + '<p>La plataforma y las personas voluntarias no se responsabilizan por decisiones tomadas a partir de esta orientación. La decisión final de entrar o no a un inmueble es tuya y, idealmente, de un profesional que lo revise en sitio.</p>'
+    + '<h3>Tus datos</h3>'
+    + '<p>Tu teléfono o email de contacto se guarda únicamente para que un ingeniero pueda orientarte, y <b>nunca se muestra públicamente</b> ni se entrega a terceros con fines comerciales. La foto y la descripción que subes sí son públicas dentro de la app para que puedan ser evaluadas. No publiques datos sensibles que no quieras que se vean.</p>'
+    + '<h3>Moderación</h3>'
+    + '<p>Puedes reportar cualquier ficha u opinión que consideres falsa o malintencionada con el botón «Reportar». El equipo de moderación puede ocultar contenido y verificar a los ingenieros.</p>'
+    + '<h3>Contacto</h3>'
+    + '<p>Es un proyecto abierto. Puedes proponer mejoras o reportar problemas en el repositorio del proyecto en GitHub.</p>'
+    + '<div class="foot"><button class="flink" data-go="home">← Volver al inicio</button></div>'
+    + '</div></div>';
+}
+
+// ---------- Eventos ----------
+function bind(){
+  const back = $('#back'); if(back) back.onclick = goBack;
+  document.querySelectorAll('[data-go]').forEach(b=>{ b.onclick = (e)=>{ e.stopPropagation(); const g=b.dataset.go; if(g==='englist'){ state.filter='pendientes'; nav('list'); } else if(g==='engineer'){ nav('engineer'); } else nav(g); }; });
+  document.querySelectorAll('.card[data-id]').forEach(b=>{ b.onclick = ()=>openDetail(b.dataset.id); });
+  document.querySelectorAll('[data-filter]').forEach(b=>{ b.onclick = ()=>{ state.filter=b.dataset.filter; render(); }; });
+  const search = $('#search'); if(search) search.oninput = e => { state.search = e.target.value; liveList(); };
+  // reportar
+  document.querySelectorAll('[data-rep-viv]').forEach(b=>{ b.onclick = ()=>reportItem('vivienda', b.dataset.repViv, b); });
+  document.querySelectorAll('[data-rep-op]').forEach(b=>{ b.onclick = ()=>reportItem('opinion', b.dataset.repOp, b); });
+  // register
+  document.querySelectorAll('[data-tipo]').forEach(b=>{ b.onclick = ()=>{ document.querySelectorAll('[data-tipo]').forEach(x=>x.classList.remove('opt-on')); b.classList.add('opt-on'); b.dataset.sel='1'; }; });
+  document.querySelectorAll('[data-dmg]').forEach(b=>{ b.onclick = ()=>toggleDmg(b); });
+  const consent = $('#consent'); if(consent) consent.onclick = ()=>{ const on=consent.classList.toggle('check-on'); consent.setAttribute('aria-pressed', on?'true':'false'); };
+  const photo = $('#photo'); if(photo) photo.onchange = onPhoto;
+  const sReg = $('#submitReg'); if(sReg){ sReg.onclick = submitReg; mountTurnstile('ts-reg'); }
+  // engineer
+  document.querySelectorAll('[data-status]').forEach(b=>{ b.onclick = ()=>{ document.querySelectorAll('[data-status]').forEach(x=>x.classList.remove('sem-on')); b.classList.add('sem-on'); }; });
+  const sEng = $('#submitEng'); if(sEng){ sEng.onclick = submitEng; mountTurnstile('ts-eng'); }
+}
+
+function liveList(){ // refresca solo la sección de lista al buscar, sin perder foco
+  const v = $('#view'); const scr = v.querySelector('.scr'); if(!scr) return;
+  const tmp = document.createElement('div'); tmp.innerHTML = viewList();
+  const newScr = tmp.querySelector('.scr');
+  const oldChips = scr.querySelector('.chips'); const newChips = newScr.querySelector('.chips');
+  let node = oldChips; const after = [];
+  while(node){ after.push(node); node = node.nextElementSibling; }
+  after.forEach(n=>n.remove());
+  let nn = newChips; while(nn){ const next = nn.nextElementSibling; scr.appendChild(nn); nn = next; }
+  document.querySelectorAll('[data-filter]').forEach(b=>{ b.onclick = ()=>{ state.filter=b.dataset.filter; render(); }; });
+  document.querySelectorAll('.card[data-id]').forEach(b=>{ b.onclick = ()=>openDetail(b.dataset.id); });
+  document.querySelectorAll('[data-go]').forEach(b=>{ b.onclick = ()=>{ const g=b.dataset.go; if(g==='register') nav('register'); }; });
+}
+
+function toggleDmg(b){
+  const key = b.dataset.dmg;
+  if(key==='ninguno'){ const on = b.classList.contains('check-on'); document.querySelectorAll('[data-dmg]').forEach(x=>x.classList.remove('check-on')); if(!on) b.classList.add('check-on'); }
+  else { document.querySelector('[data-dmg="ninguno"]').classList.remove('check-on'); b.classList.toggle('check-on'); }
+}
+
+async function reportItem(type, id, btn){
+  const motivo = window.prompt('¿Por qué reportas esto? (opcional). Escribe y acepta para enviar.');
+  if(motivo===null) return;
+  btn.disabled = true; const prev = btn.textContent; btn.textContent = 'Reportando…';
+  try { await apiPost('/'+(type==='opinion'?'opinions':'viviendas')+'/'+id+'/report', {motivo}); btn.textContent='✓ Reportado, gracias'; }
+  catch(e){ btn.textContent = prev; btn.disabled = false; }
+}
+
+function onPhoto(e){
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const fr = new FileReader();
+  fr.onload = () => { const img = new Image(); img.onload = () => {
+    const max = 1000; let w = img.width, h = img.height; if(w>max){ h = Math.round(h*max/w); w = max; }
+    const c = document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+    pendingPhoto = c.toDataURL('image/jpeg', 0.7);
+    let pv = $('#pv');
+    if(!pv){ pv = document.createElement('img'); pv.className='preview'; pv.id='pv'; const field = $('#photo').closest('.field'); field.insertBefore(pv, field.querySelector('.photo')); }
+    pv.src = pendingPhoto; const pl = $('#photoLabel'); if(pl) pl.textContent='Cambiar foto';
+  }; img.src = fr.result; };
+  fr.readAsDataURL(f);
+}
+
+async function submitReg(){
+  const contacto = $('#contacto').value.trim();
+  if(!contacto){ state.err='Déjanos un teléfono o email para poder avisarte. Es lo único que necesitamos.'; render(); return; }
+  if(!$('#consent').classList.contains('check-on')){ state.err='Marca la casilla para aceptar el aviso antes de continuar.'; render(); return; }
+  const tipoEl = document.querySelector('[data-tipo].opt-on');
+  const damages = [...document.querySelectorAll('[data-dmg].check-on')].map(b=>DMG[b.dataset.dmg]);
+  const payload = {
+    contacto, nombre:'', ubicacion:$('#ubicacion').value.trim(),
+    tipo: tipoEl?tipoEl.dataset.tipo:'', damages, descripcion:$('#descripcion').value.trim(),
+    foto: pendingPhoto || '', consent:true, turnstile: tsToken()
+  };
+  const btn = $('#submitReg'); btn.disabled=true; btn.textContent='Registrando…';
+  try { const v = await apiPost('/viviendas', payload); pendingPhoto=null; await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
+  catch(e){ state.err = e.message; render(); }
+}
+
+async function submitEng(){
+  const nombre=$('#eg_nombre').value.trim(), profesion=$('#eg_prof').value.trim(), civ=$('#eg_civ').value.trim(), comentario=$('#eg_com').value.trim();
+  const statusEl = document.querySelector('[data-status].sem-on');
+  if(!nombre||!profesion){ state.err='Indica tu nombre y profesión.'; render(); return; }
+  if(!statusEl){ state.err='Selecciona una opinión en semáforo (verde, amarillo o rojo).'; render(); return; }
+  if(!comentario){ state.err='El comentario es obligatorio: explica por qué.'; render(); return; }
+  const btn=$('#submitEng'); btn.disabled=true; btn.textContent='Enviando…';
+  try { const v = await apiPost('/viviendas/'+state.sel.id+'/opinions', {nombre,profesion,civ,status:statusEl.dataset.status,comentario,turnstile:tsToken()}); await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
+  catch(e){ state.err=e.message; render(); }
+}
+
+// ---------- Init ----------
+(async function(){ await Promise.all([loadConfig(), loadList()]); render(); })();
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

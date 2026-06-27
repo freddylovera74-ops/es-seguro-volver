@@ -1,0 +1,13 @@
+{
+  "name": "¿Es seguro volver?",
+  "short_name": "¿Volver?",
+  "description": "Orientación estructural ciudadana tras un sismo.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f4f2",
+  "theme_color": "#1c4fd6",
+  "lang": "es",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

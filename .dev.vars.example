@@ -1,0 +1,9 @@
+# Copia este archivo a `.dev.vars` para desarrollo local (no se sube a git).
+# Para activar el panel de moderación en local, define un token cualquiera:
+ADMIN_TOKEN="cambia-esto-por-un-token-largo-y-secreto"
+
+# Turnstile (anti-spam) es OPCIONAL. Si no lo defines, la app funciona igual
+# sin verificación. Para activarlo, crea un widget en el panel de Cloudflare
+# (Turnstile) y pega aquí el secreto, y la clave de sitio en wrangler.toml.
+# TURNSTILE_SECRET="0x..."
+# TURNSTILE_SITE_KEY="1x00000000000000000000AA"

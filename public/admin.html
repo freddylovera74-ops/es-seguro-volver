@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Moderación · ¿Es seguro volver?</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#ececea;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#181816}
+.wrap{max-width:760px;margin:0 auto;padding:18px}
+h1{font-size:20px;margin:6px 0 14px}
+.bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+input{flex:1;min-width:200px;padding:11px 12px;border:1.5px solid #cfcfca;border-radius:9px;font-size:14px}
+button{appearance:none;border:1px solid #cfcfca;background:#fff;border-radius:9px;padding:10px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.b-blue{background:#1c4fd6;color:#fff;border-color:#1c4fd6}
+.b-warn{color:#9a1c16;border-color:#ecb3ae}
+.b-ok{color:#157a3b;border-color:#b7e1c4}
+.msg{font-size:13px;color:#76766d;margin-bottom:14px;min-height:18px}
+.v{background:#fff;border:1px solid #e2e2df;border-radius:12px;padding:14px;margin-bottom:14px}
+.v.hid{opacity:.55}
+.v-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
+.v-t{font-size:16px;font-weight:700}
+.v-m{font-size:12.5px;color:#76766d;margin-bottom:4px}
+.tagk{display:inline-block;font-size:11px;font-weight:800;color:#fff;border-radius:5px;padding:2px 7px}
+.k-g{background:#1f9d4d}.k-y{background:#d39000}.k-r{background:#c0241c}.k-p{background:#a5a59c}
+.rp{display:inline-block;font-size:11px;font-weight:700;color:#9a1c16;background:#fbe7e5;border:1px solid #ecb3ae;border-radius:5px;padding:1px 6px;margin-left:6px}
+.contact{font-size:12px;color:#1c4fd6;margin:4px 0 8px}
+.acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.op{border-top:1px solid #eee;padding-top:10px;margin-top:10px}
+.op.hid{opacity:.5}
+.op-n{font-size:14px;font-weight:700}
+.op-p{font-size:12px;color:#76766d}
+.op-c{font-size:13px;line-height:1.45;margin:6px 0}
+.vrf{color:#157a3b;font-weight:800;font-size:11px}
+.hint{font-size:12px;color:#85857c;margin-top:24px;line-height:1.5}
+a{color:#1c4fd6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Panel de moderación</h1>
+<div class="bar">
+  <input id="token" type="password" placeholder="Token de moderación (ADMIN_TOKEN)">
+  <button class="b-blue" id="load">Entrar / Recargar</button>
+</div>
+<div class="msg" id="msg">Pega el token y entra. Se guarda solo en este navegador.</div>
+<div id="data"></div>
+<div class="hint">El token es el secreto <code>ADMIN_TOKEN</code> que configuraste en Cloudflare.
+Si ves «no configurado», define el secreto con <code>wrangler pages secret put ADMIN_TOKEN</code>.
+· <a href="/">← Volver a la app</a></div>
+</div>
+<script>
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY = { green:'k-g', yellow:'k-y', red:'k-r', pending:'k-p' };
+const $ = s => document.querySelector(s);
+let token = localStorage.getItem('esv_admin_token') || '';
+$('#token').value = token;
+
+function setMsg(t){ $('#msg').textContent = t; }
+
+async function api(path, opts={}){
+  const r = await fetch(path, { ...opts, headers: { 'Authorization':'Bearer '+token, 'Content-Type':'application/json', ...(opts.headers||{}) } });
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.error || ('Error '+r.status));
+  return j;
+}
+
+async function load(){
+  token = $('#token').value.trim();
+  if(!token){ setMsg('Falta el token.'); return; }
+  localStorage.setItem('esv_admin_token', token);
+  setMsg('Cargando…');
+  try {
+    const d = await api('/api/admin/data');
+    render(d.viviendas||[]);
+    setMsg((d.viviendas||[]).length + ' viviendas. Ordenadas por nº de reportes.');
+  } catch(e){ setMsg('✗ '+e.message); $('#data').innerHTML=''; }
+}
+
+function statusKey(v){
+  let worst = 0; const rank={green:1,yellow:2,red:3};
+  for(const o of (v.opinions||[])){ if(!o.hidden) worst = Math.max(worst, rank[o.status]||0); }
+  return worst>=3?'red':worst===2?'yellow':worst===1?'green':'pending';
+}
+
+function render(vs){
+  $('#data').innerHTML = vs.map(v=>{
+    const sk = statusKey(v);
+    const rep = v.reports>0 ? '<span class="rp">⚐ '+v.reports+'</span>' : '';
+    const ops = (v.opinions||[]).map(o=>{
+      const orep = o.reports>0 ? '<span class="rp">⚐ '+o.reports+'</span>' : '';
+      const vrf = o.verified ? ' <span class="vrf">✓ verificado</span>' : '';
+      return '<div class="op'+(o.hidden?' hid':'')+'"><div class="op-n">'+esc(o.nombre)+vrf+orep+'</div>'
+        + '<div class="op-p">'+esc(o.profesion)+(o.civ?(' · CIV '+esc(o.civ)):'')+' · <span class="tagk '+KEY[o.status]+'">'+esc((o.status||'').toUpperCase())+'</span></div>'
+        + '<div class="op-c">'+esc(o.comentario)+'</div>'
+        + '<div class="acts">'
+        + '<button data-act="'+(o.hidden?'unhide':'hide')+'" data-target="opinion" data-id="'+esc(o.id)+'" class="'+(o.hidden?'b-ok':'b-warn')+'">'+(o.hidden?'Mostrar':'Ocultar')+'</button>'
+        + '<button data-act="'+(o.verified?'unverify':'verify')+'" data-target="opinion" data-id="'+esc(o.id)+'" class="'+(o.verified?'':'b-ok')+'">'+(o.verified?'Quitar verificación':'Verificar ingeniero')+'</button>'
+        + '</div></div>';
+    }).join('');
+    return '<div class="v'+(v.hidden?' hid':'')+'"><div class="v-top"><div><div class="v-t">'+esc(v.titulo)+rep+'</div>'
+      + '<div class="v-m">'+esc(v.ubicacion)+' · '+esc(v.tipo||'—')+'</div></div>'
+      + '<span class="tagk '+KEY[sk]+'">'+sk.toUpperCase()+'</span></div>'
+      + '<div class="contact">Contacto (privado): '+esc(v.contacto||'—')+'</div>'
+      + '<div class="acts"><button data-act="'+(v.hidden?'unhide':'hide')+'" data-target="vivienda" data-id="'+esc(v.id)+'" class="'+(v.hidden?'b-ok':'b-warn')+'">'+(v.hidden?'Mostrar vivienda':'Ocultar vivienda')+'</button></div>'
+      + ops + '</div>';
+  }).join('') || '<div class="msg">No hay viviendas.</div>';
+
+  document.querySelectorAll('[data-act]').forEach(b=>{
+    b.onclick = async ()=>{
+      b.disabled = true;
+      try { await api('/api/admin/moderate', { method:'POST', body: JSON.stringify({ action:b.dataset.act, target:b.dataset.target, id:b.dataset.id }) }); await load(); }
+      catch(e){ setMsg('✗ '+e.message); b.disabled=false; }
+    };
+  });
+}
+
+$('#load').onclick = load;
+$('#token').addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+if(token) load();
+</script>
+</body>
+</html>
