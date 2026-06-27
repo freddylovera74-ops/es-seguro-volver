@@ -113,6 +113,13 @@ button{font-family:inherit}
 .photo-h{font-size:14px;font-weight:600;color:#46463f}
 .photo-s{font-size:12px;color:#85857c}
 .preview{width:100%;border-radius:10px;display:block;max-height:240px;object-fit:cover;margin-bottom:9px}
+.pvs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
+.pvw{position:relative}
+.pvw img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}
+.pvx{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:none;background:#181816;color:#fff;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.pcount{grid-column:1/-1;font-size:12px;color:#85857c;margin-top:2px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 16px}
+.gthumb{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#eee;display:block}
 .sem{display:flex;flex-direction:column;gap:9px}
 .sem-b{appearance:none;display:flex;gap:12px;align-items:flex-start;text-align:left;border:1.5px solid #d6d6d2;background:#fff;border-radius:11px;padding:13px;cursor:pointer;width:100%}
 .sem-g.sem-on{border-color:#1f9d4d;background:#e7f6ec}.sem-y.sem-on{border-color:#d39000;background:#fdf3dc}.sem-r.sem-on{border-color:#c0241c;background:#fbe7e5}
@@ -146,13 +153,13 @@ const INFO = {
   green:{c:'g',tag:'VERDE',short:'Sin daños aparentes',sub:'Sin daños estructurales aparentes en la foto. Probablemente habitable. No es garantía: una foto no reemplaza la revisión presencial.',color:'#1f9d4d'},
   yellow:{c:'y',tag:'AMARILLO',short:'Uso restringido',sub:'Uso restringido. Posibles daños; entra solo lo imprescindible y con cuidado.',color:'#d39000'},
   red:{c:'r',tag:'ROJO',short:'No entrar',sub:'No entrar. Señales de riesgo estructural; podría colapsar en una réplica.',color:'#c0241c'},
-  pending:{c:'p',tag:'PENDIENTE',short:'Pendiente de revisión',sub:'Todavía ningún ingeniero ha dado su opinión. Si eres profesional, puedes añadir la tuya.',color:'#a5a59c'}
+  pending:{c:'p',tag:'PENDIENTE',short:'Pendiente de revisión',sub:'Todavía ningún ingeniero o arquitecto ha dado su opinión. Si eres profesional, puedes añadir la tuya.',color:'#a5a59c'}
 };
 const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
-const WARN = '<div class="warn"><div class="warn-ico">!</div><div class="warn-txt">Esto es una <b>orientación a distancia, NO una inspección oficial</b>. Una foto no reemplaza la revisión presencial de un ingeniero. <b>Ante la duda, NO entres.</b></div></div>';
+const WARN = '<div class="warn"><div class="warn-ico">!</div><div class="warn-txt">Esto es una <b>orientación a distancia, NO una inspección oficial</b>. Una foto no reemplaza la revisión presencial de un ingeniero o arquitecto. <b>Ante la duda, NO entres.</b></div></div>';
 
 const state = { screen:'home', list:[], sel:null, filter:'todas', search:'', err:'', tsKey:null };
-let pendingPhoto = null;
+let pendingPhotos = [];
 let tsWidget = null;
 
 // ---------- API ----------
@@ -204,8 +211,8 @@ function viewHome(){
   const pend = state.list.filter(x=>x.statusKey==='pending').length;
   return WARN + '<div class="scr">'
     + '<h1 class="h1">Antes de volver, que alguien con criterio mire tu vivienda.</h1>'
-    + '<p class="lead">Sube una foto y los datos de tu casa o edificio. Ingenieros voluntarios te dan una orientación de seguridad a distancia, sin costo.</p>'
-    + '<div class="brow"><button class="btn btn-blue" data-go="register">Registrar mi vivienda</button><button class="btn btn-ghost" data-go="englist">Soy ingeniero, quiero ayudar</button></div>'
+    + '<p class="lead">Sube fotos y los datos de tu casa o edificio. Ingenieros y arquitectos voluntarios te dan una orientación de seguridad a distancia, sin costo.</p>'
+    + '<div class="brow"><button class="btn btn-blue" data-go="register">Registrar mi vivienda</button><button class="btn btn-ghost" data-go="englist">Soy ingeniero o arquitecto, quiero ayudar</button></div>'
     + '<button class="link" data-go="list">Ver todas las viviendas registradas →</button>'
     + '<div class="stats" style="margin-top:18px"><div class="stat"><div class="stat-n">'+n+'</div><div class="stat-l">Viviendas registradas</div></div><div class="stat"><div class="stat-n txt-g">'+rev+'</div><div class="stat-l">Revisadas</div></div><div class="stat"><div class="stat-n txt-y">'+pend+'</div><div class="stat-l">Pendientes</div></div></div>'
     + footer()
@@ -245,7 +252,7 @@ function viewList(){
 function card(x){
   const i = INFO[x.statusKey]||INFO.pending;
   const meta = esc(x.ubicacion+' · '+cap(x.tipo)+' · '+x.pisos+' pisos');
-  const opText = x.opCount ? (x.opCount===1?'1 opinión de ingeniero':x.opCount+' opiniones de ingenieros') : 'Sin revisar todavía';
+  const opText = x.opCount ? (x.opCount===1?'1 opinión profesional':x.opCount+' opiniones profesionales') : 'Sin revisar todavía';
   const foto = x.foto ? '<img class="foto" src="'+esc(x.foto)+'" alt="">' : '<div class="ph">SIN FOTO</div>';
   return '<button class="card" data-id="'+esc(x.id)+'"><div class="cbar bar-'+i.c+'"></div><div class="card-in">'+foto
     + '<div class="card-body"><div class="card-t">'+esc(x.titulo)+'</div><div class="card-m">'+meta+'</div>'
@@ -268,7 +275,9 @@ function viewDetail(){
   const v = state.sel;
   if(!v) return WARN+'<div class="scr"><div class="muted">No se pudo cargar la vivienda.</div></div>';
   const i = INFO[v.statusKey]||INFO.pending;
-  const foto = v.foto ? '<img class="foto-lg" src="'+esc(v.foto)+'" alt="Foto de la vivienda">' : '<div class="ph-lg">[ foto de la vivienda ]</div>';
+  const fotos = (v.fotos && v.fotos.length) ? v.fotos : (v.foto ? [v.foto] : []);
+  const fotoMain = fotos.length ? '<img class="foto-lg" src="'+esc(fotos[0])+'" alt="Foto de la vivienda">' : '<div class="ph-lg">[ foto de la vivienda ]</div>';
+  const fotoRest = fotos.length>1 ? '<div class="gallery">'+fotos.slice(1).map(f=>'<img class="gthumb" src="'+esc(f)+'" alt="">').join('')+'</div>' : '';
   const ops = (v.opinions||[]).map(o=>{
     const oi = INFO[o.status]||INFO.pending;
     const prof = o.civ ? esc(o.profesion+' · CIV '+o.civ) : esc(o.profesion);
@@ -276,9 +285,9 @@ function viewDetail(){
     return '<div class="op" style="border-left-color:'+oi.color+'"><div class="op-h"><div><div class="op-name">'+esc(o.nombre)+'</div><div class="op-prof">'+prof+'</div>'+vb+'</div><div class="op-tag" style="background:'+oi.color+'">'+oi.tag+'</div></div>'
       + '<div class="op-c">'+esc(o.comentario)+'</div><div class="op-f"><span>De ser posible, que un profesional revise la vivienda en persona.</span><button class="rep" data-rep-op="'+esc(o.id)+'">⚐ Reportar</button></div></div>';
   }).join('');
-  const noOps = (v.opinions||[]).length===0 ? '<div class="empty" style="margin-bottom:16px"><div class="empty-t">Aún no hay opiniones de ingenieros.</div><div class="empty-s">¿Eres ingeniero o profesional de la construcción? Tu opinión orientativa puede ayudar a esta familia a decidir.</div></div>' : '';
+  const noOps = (v.opinions||[]).length===0 ? '<div class="empty" style="margin-bottom:16px"><div class="empty-t">Aún no hay opiniones profesionales.</div><div class="empty-s">¿Eres ingeniero, arquitecto u otro profesional de la construcción? Tu opinión orientativa puede ayudar a esta familia a decidir.</div></div>' : '';
   const opCountText = (v.opinions||[]).length ? ((v.opinions.length)+(v.opinions.length===1?' opinión':' opiniones')) : 'Ninguna aún';
-  return WARN + '<div class="scr">'+foto
+  return WARN + '<div class="scr">'+fotoMain+fotoRest
     + '<h2 class="dt-title">'+esc(v.titulo)+'</h2><div class="dt-loc">'+esc(v.ubicacion)+'</div>'
     + '<div class="sb sb-'+i.c+'"><div class="sb-dot dot-'+i.c+'"></div><div><div class="sb-tag txt-'+i.c+'">'+i.tag+'</div><div class="sb-sub">'+i.sub+'</div></div></div>'
     + (v.statusKey==='red' ? authoritiesPanel(v) : '')
@@ -299,14 +308,14 @@ function viewDetail(){
 
 function viewRegister(){
   const errHtml = state.err ? '<div class="err">'+esc(state.err)+'</div>' : '';
-  const preview = pendingPhoto ? '<img class="preview" id="pv" src="'+pendingPhoto+'" alt="Vista previa">' : '';
   const chk = (k) => '<button type="button" class="check" data-dmg="'+k+'"><span class="cbox"></span>'+DMG[k]+'</button>';
   const ts = state.tsKey ? '<div class="ts" id="ts-reg"></div>' : '';
   return '<div class="scr"><h2 class="dt-title" style="margin-bottom:4px">Registrar mi vivienda</h2>'
-    + '<p class="lead" style="margin-bottom:16px;font-size:14.5px">Solo necesitamos una <b>foto</b> y un <b>contacto</b>. Lo demás, si puedes y con calma. Un ingeniero la revisará.</p>'
+    + '<p class="lead" style="margin-bottom:16px;font-size:14.5px">Solo necesitamos una <b>foto</b> (o varias) y un <b>contacto</b>. Lo demás, si puedes y con calma. Un ingeniero o arquitecto la revisará.</p>'
     + errHtml
-    + '<div class="field"><span class="label">Foto de la vivienda <span class="opt">(lo más útil)</span></span>'+preview
-    + '<label class="photo"><div class="photo-h" id="photoLabel">'+(pendingPhoto?'Cambiar foto':'Toca para subir una foto')+'</div><div class="photo-s">Se comprime sola antes de subir</div><input type="file" id="photo" accept="image/*" style="display:none"></label></div>'
+    + '<div class="field"><span class="label">Fotos de la vivienda <span class="opt">(hasta 20 — varios ángulos ayudan)</span></span>'
+    + '<div class="pvs" id="pvs"></div>'
+    + '<label class="photo"><div class="photo-h" id="photoLabel">Toca para añadir fotos</div><div class="photo-s">Se comprimen solas. Puedes elegir varias a la vez.</div><input type="file" id="photo" accept="image/*" multiple style="display:none"></label></div>'
     + '<label class="field"><span class="label">Teléfono o email de contacto <span class="req">*</span></span><input class="input" id="contacto" type="text" placeholder="Ej. 0414-1234567"><span class="priv">🔒 Privado. No se muestra a nadie más.</span></label>'
     + '<label class="field"><span class="label">¿Dónde queda? <span class="opt">(ciudad y sector)</span></span><input class="input" id="ubicacion" type="text" placeholder="Ej. El Llano, Mérida"></label>'
     + '<div class="field"><span class="label">¿Qué es? <span class="opt">(opcional)</span></span><div class="opts"><button type="button" class="opt-b" data-tipo="casa">Casa</button><button type="button" class="opt-b" data-tipo="apartamento">Apartamento</button><button type="button" class="opt-b" data-tipo="edificio">Edificio</button></div></div>'
@@ -321,10 +330,10 @@ function viewEngineer(){
   const v = state.sel;
   const errHtml = state.err ? '<div class="err">'+esc(state.err)+'</div>' : '';
   const ts = state.tsKey ? '<div class="ts" id="ts-eng"></div>' : '';
-  return '<div class="scr"><h2 class="dt-title" style="margin-bottom:4px">Opinión del ingeniero</h2>'
+  return '<div class="scr"><h2 class="dt-title" style="margin-bottom:4px">Opinión profesional (ingeniero o arquitecto)</h2>'
     + '<p class="lead" style="margin-bottom:18px;font-size:14.5px">Para: <b>'+esc(v?v.titulo:'')+'</b></p>'+errHtml
     + '<label class="field"><span class="label">Su nombre <span class="req">*</span></span><input class="input" id="eg_nombre" type="text" placeholder="Ej. Ing. Carlos Materán"></label>'
-    + '<label class="field"><span class="label">Profesión <span class="req">*</span></span><input class="input" id="eg_prof" type="text" placeholder="Ej. Ingeniero estructural"></label>'
+    + '<label class="field"><span class="label">Profesión <span class="req">*</span></span><input class="input" id="eg_prof" type="text" placeholder="Ej. Ingeniero estructural / Arquitecto"></label>'
     + '<label class="field"><span class="label">N.º de colegiatura CIV <span class="opt">(opcional, da respaldo)</span></span><input class="input" id="eg_civ" type="text" placeholder="Ej. 20891"></label>'
     + '<div class="field"><span class="label">Opinión en semáforo <span class="req">*</span></span><div class="sem">'
     + '<button type="button" class="sem-b sem-g" data-status="green"><span class="sem-dot dot-g"></span><div><div class="sem-t">🟢 VERDE</div><div class="sem-d">Sin daños estructurales aparentes en la foto. Probablemente habitable.</div></div></button>'
@@ -368,7 +377,7 @@ function bind(){
   document.querySelectorAll('[data-tipo]').forEach(b=>{ b.onclick = ()=>{ document.querySelectorAll('[data-tipo]').forEach(x=>x.classList.remove('opt-on')); b.classList.add('opt-on'); b.dataset.sel='1'; }; });
   document.querySelectorAll('[data-dmg]').forEach(b=>{ b.onclick = ()=>toggleDmg(b); });
   const consent = $('#consent'); if(consent) consent.onclick = ()=>{ const on=consent.classList.toggle('check-on'); consent.setAttribute('aria-pressed', on?'true':'false'); };
-  const photo = $('#photo'); if(photo) photo.onchange = onPhoto;
+  const photo = $('#photo'); if(photo){ photo.onchange = onPhoto; renderPhotoPreviews(); }
   const sReg = $('#submitReg'); if(sReg){ sReg.onclick = submitReg; mountTurnstile('ts-reg'); }
   // engineer
   document.querySelectorAll('[data-status]').forEach(b=>{ b.onclick = ()=>{ document.querySelectorAll('[data-status]').forEach(x=>x.classList.remove('sem-on')); b.classList.add('sem-on'); }; });
@@ -404,17 +413,26 @@ async function reportItem(type, id, btn){
 }
 
 function onPhoto(e){
-  const f = e.target.files && e.target.files[0]; if(!f) return;
-  const fr = new FileReader();
-  fr.onload = () => { const img = new Image(); img.onload = () => {
-    const max = 1000; let w = img.width, h = img.height; if(w>max){ h = Math.round(h*max/w); w = max; }
-    const c = document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
-    pendingPhoto = c.toDataURL('image/jpeg', 0.7);
-    let pv = $('#pv');
-    if(!pv){ pv = document.createElement('img'); pv.className='preview'; pv.id='pv'; const field = $('#photo').closest('.field'); field.insertBefore(pv, field.querySelector('.photo')); }
-    pv.src = pendingPhoto; const pl = $('#photoLabel'); if(pl) pl.textContent='Cambiar foto';
-  }; img.src = fr.result; };
-  fr.readAsDataURL(f);
+  const files = e.target.files ? [...e.target.files] : []; if(!files.length) return;
+  const room = 20 - pendingPhotos.length;
+  files.slice(0, Math.max(0, room)).forEach(f=>{
+    const fr = new FileReader();
+    fr.onload = () => { const img = new Image(); img.onload = () => {
+      const max = 1000; let w = img.width, h = img.height; if(w>max){ h = Math.round(h*max/w); w = max; }
+      const c = document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+      pendingPhotos.push(c.toDataURL('image/jpeg', 0.7)); renderPhotoPreviews();
+    }; img.src = fr.result; };
+    fr.readAsDataURL(f);
+  });
+  e.target.value = ''; // permite volver a seleccionar las mismas
+}
+
+function renderPhotoPreviews(){
+  const c = document.getElementById('pvs'); if(!c) return;
+  c.innerHTML = pendingPhotos.map((src,i)=>'<div class="pvw"><img src="'+src+'" alt=""><button type="button" class="pvx" data-rmphoto="'+i+'" aria-label="Quitar foto">×</button></div>').join('')
+    + (pendingPhotos.length ? '<div class="pcount">'+pendingPhotos.length+'/20 fotos</div>' : '');
+  c.querySelectorAll('[data-rmphoto]').forEach(b=>{ b.onclick = ()=>{ pendingPhotos.splice(+b.dataset.rmphoto, 1); renderPhotoPreviews(); }; });
+  const pl = document.getElementById('photoLabel'); if(pl) pl.textContent = pendingPhotos.length ? 'Añadir más fotos' : 'Toca para añadir fotos';
 }
 
 async function submitReg(){
@@ -426,10 +444,10 @@ async function submitReg(){
   const payload = {
     contacto, nombre:'', ubicacion:$('#ubicacion').value.trim(),
     tipo: tipoEl?tipoEl.dataset.tipo:'', damages, descripcion:$('#descripcion').value.trim(),
-    foto: pendingPhoto || '', consent:true, turnstile: tsToken()
+    fotos: pendingPhotos, consent:true, turnstile: tsToken()
   };
   const btn = $('#submitReg'); btn.disabled=true; btn.textContent='Registrando…';
-  try { const v = await apiPost('/viviendas', payload); pendingPhoto=null; await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
+  try { const v = await apiPost('/viviendas', payload); pendingPhotos=[]; await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
   catch(e){ state.err = e.message; render(); }
 }
 

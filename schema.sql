@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS viviendas (
   construccion TEXT,
   damages TEXT,             -- JSON con la lista de daños
   descripcion TEXT,
-  foto TEXT,                -- ruta pública servida desde R2 (/uploads/...)
+  foto TEXT,                -- foto principal (miniatura): ruta servida desde R2
+  fotos TEXT,               -- JSON con todas las rutas de fotos (hasta 20)
   hidden INTEGER NOT NULL DEFAULT 0,   -- moderación: 1 = oculta al público
   reports INTEGER NOT NULL DEFAULT 0,  -- nº de reportes recibidos
   created_at INTEGER

@@ -1,7 +1,7 @@
 // /api/viviendas  ->  GET (lista) y POST (registrar)
 import { json, bad, readJson, clientIp, guard } from '../../lib/http.js';
-import { listViviendas, createVivienda, setFoto, getVivienda } from '../../lib/db.js';
-import { decodePhoto } from '../../lib/validation.js';
+import { listViviendas, createVivienda, setFotos, getVivienda } from '../../lib/db.js';
+import { decodePhotos } from '../../lib/validation.js';
 import { putPhoto } from '../../lib/photos.js';
 import { verifyTurnstile } from '../../lib/turnstile.js';
 
@@ -21,11 +21,13 @@ export function onRequestPost({ request, env }) {
     if (!body.contacto || !String(body.contacto).trim())
       return bad('El contacto es obligatorio.');
 
-    const photo = decodePhoto(body.foto); // puede lanzar HttpError si es muy grande
-    const id = await createVivienda(env, body, null);
-    if (photo) {
-      const fotoPath = await putPhoto(env, id, photo);
-      await setFoto(env, id, fotoPath);
+    // Acepta varias fotos (body.fotos = array) o una sola (body.foto).
+    const photos = decodePhotos(body.fotos || body.foto); // puede lanzar HttpError si una es muy grande
+    const id = await createVivienda(env, body);
+    if (photos.length) {
+      const paths = [];
+      for (let i = 0; i < photos.length; i++) paths.push(await putPhoto(env, id, photos[i], i));
+      await setFotos(env, id, paths);
     }
     return json(await getVivienda(env, id), 201);
   });

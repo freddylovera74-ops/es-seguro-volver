@@ -11,7 +11,7 @@ pages_build_output_dir = "public"
 [[d1_databases]]
 binding = "DB"
 database_name = "esv-db"
-database_id = "REEMPLAZAR_CON_EL_ID_DE_wrangler_d1_create"
+database_id = "c9f6f23e-d5de-4c2b-aa1e-0c101b051b6a"
 
 # --- Almacenamiento de fotos (objetos) ---
 [[r2_buckets]]

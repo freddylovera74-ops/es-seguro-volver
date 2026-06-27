@@ -95,7 +95,7 @@ function render(vs){
         + '<div class="op-c">'+esc(o.comentario)+'</div>'
         + '<div class="acts">'
         + '<button data-act="'+(o.hidden?'unhide':'hide')+'" data-target="opinion" data-id="'+esc(o.id)+'" class="'+(o.hidden?'b-ok':'b-warn')+'">'+(o.hidden?'Mostrar':'Ocultar')+'</button>'
-        + '<button data-act="'+(o.verified?'unverify':'verify')+'" data-target="opinion" data-id="'+esc(o.id)+'" class="'+(o.verified?'':'b-ok')+'">'+(o.verified?'Quitar verificación':'Verificar ingeniero')+'</button>'
+        + '<button data-act="'+(o.verified?'unverify':'verify')+'" data-target="opinion" data-id="'+esc(o.id)+'" class="'+(o.verified?'':'b-ok')+'">'+(o.verified?'Quitar verificación':'Verificar profesional')+'</button>'
         + '</div></div>';
     }).join('');
     return '<div class="v'+(v.hidden?' hid':'')+'"><div class="v-top"><div><div class="v-t">'+esc(v.titulo)+rep+'</div>'
