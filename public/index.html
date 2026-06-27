@@ -83,6 +83,8 @@ button{font-family:inherit}
 .rep{appearance:none;background:none;border:none;color:#9a9a90;font-size:12px;font-weight:600;cursor:pointer;padding:2px 4px;text-decoration:underline;font-family:inherit;flex-shrink:0}
 .rep:hover{color:#9a1c16}
 .note{display:flex;gap:10px;background:#eef3fd;border:1px solid #bcd0f5;border-radius:10px;padding:13px;font-size:13px;line-height:1.45;color:#22427e;margin-bottom:16px}
+.mine-note{background:#eef3fd;border:1px solid #bcd0f5;border-radius:11px;padding:14px;font-size:13.5px;line-height:1.45;color:#22427e}
+.help{margin-top:10px;background:#e7f6ec;border:1px solid #b7e1c4;border-radius:9px;padding:10px 12px;font-size:13px;line-height:1.45;color:#157a3b}
 .auth{background:#fbe7e5;border:1px solid #ecb3ae;border-left:5px solid #c0241c;border-radius:12px;padding:15px;margin:0 0 18px}
 .auth-h{font-size:15px;font-weight:800;color:#9a1c16;margin-bottom:5px}
 .auth-s{font-size:13px;line-height:1.45;color:#5a2a26;margin-bottom:12px}
@@ -161,6 +163,11 @@ const WARN = '<div class="warn"><div class="warn-ico">!</div><div class="warn-tx
 const state = { screen:'home', list:[], sel:null, filter:'todas', search:'', err:'', tsKey:null };
 let pendingPhotos = [];
 let tsWidget = null;
+
+// Viviendas registradas desde ESTE dispositivo (para no opinar sobre lo propio).
+function myViviendas(){ try{ return JSON.parse(localStorage.getItem('esv_mine')||'[]'); }catch(e){ return []; } }
+function isMine(id){ return myViviendas().indexOf(id) !== -1; }
+function addMine(id){ const a=myViviendas(); if(a.indexOf(id)===-1){ a.push(id); try{ localStorage.setItem('esv_mine', JSON.stringify(a)); }catch(e){} } }
 
 // ---------- API ----------
 async function apiGet(p){ const r = await fetch(API+p); if(!r.ok) throw new Error('http'); return r.json(); }
@@ -283,10 +290,15 @@ function viewDetail(){
     const prof = o.civ ? esc(o.profesion+' · CIV '+o.civ) : esc(o.profesion);
     const vb = o.verified ? '<div><span class="vbadge">✓ Verificado</span></div>' : '';
     return '<div class="op" style="border-left-color:'+oi.color+'"><div class="op-h"><div><div class="op-name">'+esc(o.nombre)+'</div><div class="op-prof">'+prof+'</div>'+vb+'</div><div class="op-tag" style="background:'+oi.color+'">'+oi.tag+'</div></div>'
-      + '<div class="op-c">'+esc(o.comentario)+'</div><div class="op-f"><span>De ser posible, que un profesional revise la vivienda en persona.</span><button class="rep" data-rep-op="'+esc(o.id)+'">⚐ Reportar</button></div></div>';
+      + '<div class="op-c">'+esc(o.comentario)+'</div>'
+      + (o.presencial ? '<div class="help">🤝 <b>Ofrece revisión presencial.</b>'+(o.presencialContacto ? ' Contactar: <b>'+esc(o.presencialContacto)+'</b>' : '')+'</div>' : '')
+      + '<div class="op-f"><span>De ser posible, que un profesional revise la vivienda en persona.</span><button class="rep" data-rep-op="'+esc(o.id)+'">⚐ Reportar</button></div></div>';
   }).join('');
   const noOps = (v.opinions||[]).length===0 ? '<div class="empty" style="margin-bottom:16px"><div class="empty-t">Aún no hay opiniones profesionales.</div><div class="empty-s">¿Eres ingeniero, arquitecto u otro profesional de la construcción? Tu opinión orientativa puede ayudar a esta familia a decidir.</div></div>' : '';
   const opCountText = (v.opinions||[]).length ? ((v.opinions.length)+(v.opinions.length===1?' opinión':' opiniones')) : 'Ninguna aún';
+  const engBtn = isMine(v.id)
+    ? '<div class="mine-note">Esta es <b>tu vivienda registrada</b>. Estás esperando la opinión de un ingeniero o arquitecto. Por integridad, no puedes opinar como profesional sobre tu propia vivienda.</div>'
+    : '<button class="btn btn-blue" data-go="engineer">Soy ingeniero o arquitecto — añadir mi opinión</button>';
   return WARN + '<div class="scr">'+fotoMain+fotoRest
     + '<h2 class="dt-title">'+esc(v.titulo)+'</h2><div class="dt-loc">'+esc(v.ubicacion)+'</div>'
     + '<div class="sb sb-'+i.c+'"><div class="sb-dot dot-'+i.c+'"></div><div><div class="sb-tag txt-'+i.c+'">'+i.tag+'</div><div class="sb-sub">'+i.sub+'</div></div></div>'
@@ -301,7 +313,7 @@ function viewDetail(){
     + '<div class="desc">'+esc(v.descripcion)+'</div>'
     + '<div class="sec-h"><div class="sec-t">Opiniones</div><div class="sec-c">'+opCountText+'</div></div>'
     + noOps + '<div class="ops">'+ops+'</div>'
-    + '<button class="btn btn-blue" data-go="engineer">Soy ingeniero — añadir mi opinión</button>'
+    + engBtn
     + '<div style="text-align:center;margin-top:14px"><button class="rep" data-rep-viv="'+esc(v.id)+'">⚐ Reportar esta ficha a moderación</button></div>'
     + '</div>';
 }
@@ -341,6 +353,8 @@ function viewEngineer(){
     + '<button type="button" class="sem-b sem-r" data-status="red"><span class="sem-dot dot-r"></span><div><div class="sem-t">🔴 ROJO</div><div class="sem-d">No entrar. Señales de riesgo estructural; podría colapsar en una réplica.</div></div></button>'
     + '</div></div>'
     + '<label class="field"><span class="label">Comentario — explica por qué <span class="req">*</span></span><textarea class="ta" id="eg_com" placeholder="Qué observas en la foto y los datos, y qué recomiendas."></textarea></label>'
+    + '<button type="button" class="consent" id="presencial" aria-pressed="false" style="margin-bottom:14px"><span class="cbox"></span><span>Puedo ofrecer una <b>revisión presencial</b> de esta vivienda si hace falta.</span></button>'
+    + '<label class="field" id="presWrap" style="display:none"><span class="label">Tu contacto para coordinar <span class="opt">(se mostrará en tu opinión)</span></span><input class="input" id="eg_pres" type="text" placeholder="Tel o email para que la familia te ubique"></label>'
     + '<div class="note"><div class="warn-ico" style="background:#1c4fd6">i</div><div>Tu opinión es orientativa y de buena fe. <b>Recomienda siempre una inspección presencial profesional</b> cuando sea posible.</div></div>'
     + ts
     + '<button class="btn btn-blue" id="submitEng">Enviar mi opinión</button></div>';
@@ -381,6 +395,7 @@ function bind(){
   const sReg = $('#submitReg'); if(sReg){ sReg.onclick = submitReg; mountTurnstile('ts-reg'); }
   // engineer
   document.querySelectorAll('[data-status]').forEach(b=>{ b.onclick = ()=>{ document.querySelectorAll('[data-status]').forEach(x=>x.classList.remove('sem-on')); b.classList.add('sem-on'); }; });
+  const pres = $('#presencial'); if(pres) pres.onclick = ()=>{ const on=pres.classList.toggle('check-on'); pres.setAttribute('aria-pressed', on?'true':'false'); const w=$('#presWrap'); if(w) w.style.display = on?'block':'none'; };
   const sEng = $('#submitEng'); if(sEng){ sEng.onclick = submitEng; mountTurnstile('ts-eng'); }
 }
 
@@ -447,18 +462,20 @@ async function submitReg(){
     fotos: pendingPhotos, consent:true, turnstile: tsToken()
   };
   const btn = $('#submitReg'); btn.disabled=true; btn.textContent='Registrando…';
-  try { const v = await apiPost('/viviendas', payload); pendingPhotos=[]; await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
+  try { const v = await apiPost('/viviendas', payload); pendingPhotos=[]; addMine(v.id); await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
   catch(e){ state.err = e.message; render(); }
 }
 
 async function submitEng(){
   const nombre=$('#eg_nombre').value.trim(), profesion=$('#eg_prof').value.trim(), civ=$('#eg_civ').value.trim(), comentario=$('#eg_com').value.trim();
+  const presencial = !!($('#presencial') && $('#presencial').classList.contains('check-on'));
+  const presencialContacto = $('#eg_pres') ? $('#eg_pres').value.trim() : '';
   const statusEl = document.querySelector('[data-status].sem-on');
   if(!nombre||!profesion){ state.err='Indica tu nombre y profesión.'; render(); return; }
   if(!statusEl){ state.err='Selecciona una opinión en semáforo (verde, amarillo o rojo).'; render(); return; }
   if(!comentario){ state.err='El comentario es obligatorio: explica por qué.'; render(); return; }
   const btn=$('#submitEng'); btn.disabled=true; btn.textContent='Enviando…';
-  try { const v = await apiPost('/viviendas/'+state.sel.id+'/opinions', {nombre,profesion,civ,status:statusEl.dataset.status,comentario,turnstile:tsToken()}); await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
+  try { const v = await apiPost('/viviendas/'+state.sel.id+'/opinions', {nombre,profesion,civ,status:statusEl.dataset.status,comentario,presencial,presencialContacto,turnstile:tsToken()}); await loadList(); state.sel=v; state.screen='detail'; render(); window.scrollTo(0,0); }
   catch(e){ state.err=e.message; render(); }
 }
 

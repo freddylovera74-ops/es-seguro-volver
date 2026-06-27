@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS opinions (
   civ TEXT,                 -- nº de colegiatura CIV (opcional)
   status TEXT,              -- green | yellow | red
   comentario TEXT,
+  presencial INTEGER NOT NULL DEFAULT 0, -- 1 = ofrece revisión presencial
+  presencial_contacto TEXT,              -- contacto del profesional para coordinar (si ofrece ayuda)
   verified INTEGER NOT NULL DEFAULT 0, -- 1 = ingeniero verificado por moderación
   hidden INTEGER NOT NULL DEFAULT 0,
   reports INTEGER NOT NULL DEFAULT 0,
