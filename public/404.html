@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1c4fd6">
+<meta http-equiv="refresh" content="5; url=https://tecnicosporvenezuela.com">
+<link rel="canonical" href="https://tecnicosporvenezuela.com">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<title>Nos mudamos · Técnicos por Venezuela</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:#e6e6e4;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#181816;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;-webkit-font-smoothing:antialiased}
+.card{max-width:440px;width:100%;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.10);text-align:center}
+.flag{height:6px;background:linear-gradient(90deg,#FCD116 0 33.33%,#00247D 0 66.66%,#CF142B 0)}
+.in{padding:34px 26px 30px}
+.icon{width:64px;height:64px;display:block;margin:0 auto 18px}
+h1{font-size:23px;line-height:1.25;font-weight:800;letter-spacing:-.02em;margin:0 0 12px}
+h1 b{color:#1c4fd6}
+p{font-size:15px;line-height:1.55;color:#56564f;margin:0 0 22px}
+.btn{display:block;width:100%;padding:16px;border-radius:12px;font-size:16.5px;font-weight:700;background:#1c4fd6;color:#fff;text-decoration:none;letter-spacing:-.01em}
+.small{font-size:12.5px;color:#9a9a90;margin:16px 0 0}
+.small a{color:#1c4fd6}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="flag"></div>
+  <div class="in">
+    <img class="icon" src="/icon.svg" alt="">
+    <h1>Ahora colaboramos en<br><b>Técnicos por Venezuela</b></h1>
+    <p>«¿Es seguro volver?» se ha unido a un solo lugar donde ingenieros y técnicos de Venezuela y el mundo colaboran para ayudar tras el sismo.</p>
+    <a class="btn" href="https://tecnicosporvenezuela.com">Entrar a Técnicos por Venezuela →</a>
+    <p class="small">Te llevamos automáticamente en unos segundos… Si no, entra en <a href="https://tecnicosporvenezuela.com">tecnicosporvenezuela.com</a>.</p>
+  </div>
+</div>
+<script>
+  try {
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); }).catch(function(){}); }
+    if (window.caches && caches.keys) { caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }).catch(function(){}); }
+  } catch (e) {}
+  setTimeout(function(){ location.replace('https://tecnicosporvenezuela.com'); }, 5000);
+</script>
+</body>
+</html>
